@@ -13,6 +13,7 @@
 #include "collisions.h"
 #include "goal.h"
 
+#include "instructionList.h"
 
 #include <Encoder.h>
 
@@ -68,7 +69,7 @@ void loop() {
 void fillGoals() {
     // TODO add goal dynamically with ros or custom serial / CAN protocol
     // or fetch all goals from xml / json / whatever
-    goalList.addGoal( new Goto(1000, 0));
+    //goalList.addGoal( new Goto(1000, 0));
     //goalList.addGoal(new Rot(3.14/2));
     //goalList.addGoal(new Goto(0, 1000));
     //goalList.addGoal(new Rot(3.14/2));
@@ -76,6 +77,12 @@ void fillGoals() {
     //goalList.addGoal(new Rot(3.14/2));
     //goalList.addGoal(new Goto(0, -1000));
     //Serial.println("fillGoals");
+}
+
+void readGoals(){
+    for(int i = 0; i<nbrGoto; i+2){
+        goalList.addGoal(new Goto(golist[i], golist[i+1]));
+    }
 }
 
 void asservLoop() {
