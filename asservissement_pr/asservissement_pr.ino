@@ -4,14 +4,15 @@
 */
 
 
-//#include "SimpleTimer.h"
-#include <SimpleTimer.h>
+#include "SimpleTimer.h"
+//#include <SimpleTimer.h>
 
 #include "parameters.h"
 #include "goalList.h"
 #include "robotstate.h"
 #include "collisions.h"
 #include "goal.h"
+#include "instructionList.h"
 
 
 #include <Encoder.h>
@@ -28,19 +29,19 @@ void setup() {
    Serial.begin(9600);
    timer.setInterval(TIMER_MS, asservLoop);
    fillGoals();
-   
+
 }
 
 void loop() {
-     
-        
+
+
         /*static bool a = true;
         if (a){
           timer.setInterval(TIMER_MS, asservLoop);
           fillGoals();
           a = false;
         }*/
-       
+
         //Debug coders
         /*digitalWrite(FORWARD_LEFT, HIGH);
         digitalWrite(BACKWARDS_LEFT, LOW);
@@ -56,15 +57,15 @@ void loop() {
         delay(500);
         return;*/
 
-  
+
   timer.run();
   Serial.println("loop");
   //delay(10);
   //fillGoals();
-  
+
 }
 
-
+/*
 void fillGoals() {
     // TODO add goal dynamically with ros or custom serial / CAN protocol
     // or fetch all goals from xml / json / whatever
@@ -77,14 +78,22 @@ void fillGoals() {
     //goalList.addGoal(new Goto(0, -1000));
     //Serial.println("fillGoals");
 }
+*/
+
+void fillGoals() {
+      int i = 0;
+      for (int i = 0; i <= nbrGoto; i=i+2) {
+            goalList.addGoal( new Goto(golist[i], goalList[i+1]));
+      }
+}
 
 void asservLoop() {
-  
+
     int leftTicks = leftEnc.read();
     int rightTicks = - rightEnc.read(); // minus sign because motors are in opposite directions
     robotState.update(leftTicks, rightTicks);  // update robostate after
     collisions.update();
     goalList.processCurrentGoal();
     Serial.println("asservLoop");
-    
+
 }
