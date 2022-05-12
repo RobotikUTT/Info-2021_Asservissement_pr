@@ -18,12 +18,13 @@ public:
     **/
     void updateSpeeds(float distanceError, float thetaError, float maxSpeed = 0);
     void resetPIDs();
+    //float regulator(char wheel);
     
 private:
-    PID linearPID = PID(.8, .4, .4, 5000);
-    PID angularPID = PID(.8, 0, 0, 0);
-    PID leftWheelPID = PID(.4, .5, 0, 1000);
-    PID rightWheelPID = PID(.4, .5, 0, 1000);
+    PID linearPID = PID(.7, 0.5, 0.7, 200);
+    PID angularPID = PID(80, 0.3, 60.0, 360);
+    PID leftWheelPID = PID(.54, 0.0, 0.7, 1000);
+    PID rightWheelPID = PID(.7, 0.0, 0.7, 1000);
 
     float targetLinearSpeed = 0;
     float targetAngularSpeed = 0;

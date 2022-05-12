@@ -1,7 +1,7 @@
 
 #include "robotstate.h"
 #include "goalList.h"
-
+#include "pins.h"
 #include "control.h"
 
 GoalList goalList;
@@ -11,56 +11,54 @@ extern Control control;
 void GoalList::resetGoals() {
     currentGoalIndex = 0;
     lastGoalIndex = 0;
-    goals[currentGoalIndex] = Goal();
-    Serial.println("GoalList::resetGoals()");
+    goalsPtr[currentGoalIndex] = new Goal();
 }
 
-/*void GoalList::processCurrentGoal() {
-    if (goals[currentGoalIndex].isReached() && currentGoalIndex != lastGoalIndex) {
-        currentGoalIndex = (currentGoalIndex + 1) % MAX_SIMULTANEOUS_GOALS;
-        control.resetPIDs();
+void end(){
+    digitalWrite(FORWARD_LEFT, 0);
+    digitalWrite(BACKWARDS_LEFT, LOW);
+    digitalWrite(FORWARD_RIGHT, LOW);
+    digitalWrite(BACKWARDS_RIGHT, 0);
+    while (true){
+        
     }
-    Serial.println("GoalList::processCurrentGoal()");
-    //goals[currentGoalIndex].process();
-    gProcess(goals[currentGoalIndex]);
-}*/
+}
 
 void GoalList::processCurrentGoal() {
-    if (goalsPtr[currentGoalIndex]->isReached() && currentGoalIndex == lastGoalIndex){
+    if (goalsPtr[currentGoalIndex]->isReached()){
         if (currentGoalIndex == lastGoalIndex) {
-            Serial.println("isReached()");
-            exit(0);
+            end();
+            
         }
         else{
             currentGoalIndex = (currentGoalIndex + 1) % MAX_SIMULTANEOUS_GOALS;
             control.resetPIDs();
-            Serial.println("isReached()");
+            
         }
     }
     else{
-        //gProcess(*goalsPtr[currentGoalIndex]);
         goalsPtr[currentGoalIndex]->process();
+
     }
-    
-    //Serial.println("GoalList::processCurrentGoal()");
-    //goals[currentGoalIndex].process();
-    //gProcess(*goalsPtr[currentGoalIndex]);
+    //Serial.print("currentGoalIndex : ");
+    //Serial.println(currentGoalIndex);
 }
 
 
 
 void GoalList::addGoal(Goal* goal) {
+    Serial.print("lastGoalIndex : ");
     lastGoalIndex = (lastGoalIndex + 1) % MAX_SIMULTANEOUS_GOALS;
     delete goalsPtr[lastGoalIndex];
     goalsPtr[lastGoalIndex] = goal;
-    //Serial.println("GoalList::addGoal(Goal goal)");
-    Serial.print("lastGoalIndex : ");
+    if(goal->isReached()){
+
+        Serial.println("already");
+    }
     Serial.println(lastGoalIndex);
 }
 
 
 void GoalList::gProcess(Goal const& goal){
-    Serial.println("GoalList::gProcess(Goal const& goal)");
     goal.process();
-    //(*goalsPtr[lastGoalIndex]).process();
 }

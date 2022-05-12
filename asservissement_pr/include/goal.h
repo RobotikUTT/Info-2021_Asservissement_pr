@@ -11,18 +11,23 @@
 /**
  * \brief Mother goal class. Represents an empty goal.
 **/
+
+
 class Goal {
 public:
     /**
      * \brief Sends the position error to @see control.h.
      * subclasses must override this function.
     **/
-    void process() { reached = true; Serial.println("Goal::process()"); }
+    virtual void process() {
+        reached = true;
+        Serial.println("Goal::process()");
+    }
 
-    inline const bool isReached() const { return reached;
+    inline bool isReached() const { return reached;
     // TODO Save gob
      }
-
+    
 protected:
     bool reached = false;
 };
@@ -33,12 +38,13 @@ protected:
 class Rot : public Goal {
 public:
     Rot() = delete;
-    Rot(float theta) : Goal(), theta(theta) {}
+    Rot(char type, float theta) : Goal(), type(type), theta(theta) {}
 
-    void process();
+    virtual void process();
 
 private:
     float theta; // rad
+    char type ;
 };
 
 /**
@@ -54,13 +60,14 @@ public:
      * \param y y coordinate in mm
      * \param maxSpeed max speed at which we want to go in mm/s. Cannot exceed MAX_SPEED. 0 for default.
     **/
-    Goto(float x, float y, float maxSpeed = 0) : Goal(), x(x), y(y), maxSpeed(maxSpeed) {}
+    Goto(char type, float x, float y, float maxSpeed = 0) : Goal(), type(type), x(x), y(y), maxSpeed(maxSpeed) {}
 
     //virtual void isReached();
     virtual void process();
 
 private:
     float x, y, maxSpeed; // mm, mm, mm/s
+    char type ;
 };
 
 // add new goals here and override process()

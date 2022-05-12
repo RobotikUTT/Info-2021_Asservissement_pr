@@ -9,7 +9,9 @@
 class PID {
 public:
     PID() = delete;
-    PID(float P, float I, float D, float maxIError);
+    //PID(float P, float I, float D, float maxIError);
+    PID(float P, float I, float D, float maxIError) : P(P), I(I), D(D), maxIError(maxIError) {}
+
 
     /**
      * \brief updates the errors and computes the result.

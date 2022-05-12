@@ -17,10 +17,10 @@ public:
     **/
     void update();
     float readSensors(short triggerpin, short echopin );
-    inline const float getMaxSpeed() const { return maxSpeed; }
+    const float getMaxSpeed();
     
 private:
-    int maxSpeed = MAX_SPEED; // mm/s
+    int maxSpeed; // mm/s
     //Obstacle obst = {0,0};
 };
 

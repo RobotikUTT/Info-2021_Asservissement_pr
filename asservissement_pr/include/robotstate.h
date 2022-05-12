@@ -7,28 +7,33 @@
 #define ROBOTSTATE_H
 
 #define ENCODER_USE_INTERRUPTS
-#include "Encoder.h"
-
+#include <Encoder.h>
 #include "pins.h"
 
 typedef struct {float x, y, theta;} Pose;
 typedef struct {float left, right;} WheelSpeeds;
+typedef struct {int dleft, dright;} Delta;
+
 
 class RobotState  {
 public:
     /**
     * \brief Updates wheel speeds and pose from coders.
     **/
-    void update(int leftTicks, int rightTicks);
+    void update();
+    
+    Delta getDelta(){
+        return delta;
+    }
 
     inline const Pose getPose() const { return pose; }
     inline const WheelSpeeds getWheelSpeeds() const { return wheelSpeeds; }
+
 private:
+    Delta delta = {0,0}; 
     Pose pose = {0, 0, 0}; // mm, mm, rad
     WheelSpeeds wheelSpeeds = {0,0}; // mm/s, mm/s
 
-    Encoder rightEnc = Encoder(A_RIGHT, B_RIGHT);
-    Encoder leftEnc = Encoder(A_LEFT, B_LEFT);
 };
 
 #endif

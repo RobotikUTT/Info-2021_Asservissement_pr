@@ -1,12 +1,12 @@
 #include "pid.h"
 #include "robotstate.h"
 
-PID::PID(float P, float I, float D, float maxIError) : P(P), I(I), D(D), maxIError(maxIError) {}
+//extern RobotState robotState;
+
+
 
 float PID::output(float newError) {
 	updateErrors(newError);
-  Serial.print("pid : ");
-  Serial.println(P * error + I * errorSum + D * lastError);
 	return P * error + I * errorSum + D * lastError;
 }
 
@@ -14,7 +14,8 @@ void PID::updateErrors(float newError) {
 	error = newError;
 	errorSum += error;
 	if (errorSum > maxIError) {
-		errorSum = maxIError;
+		//errorSum = maxIError;
+		errorSum = 0;
 	} else if (errorSum < - maxIError) {
 		errorSum = - maxIError;
 	}

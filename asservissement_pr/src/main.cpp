@@ -5,86 +5,81 @@
 */
 
 
-//#include "SimpleTimer.h"
-#include <Arduino.h>
 #include <SimpleTimer.h>
-#include <Encoder.h>
-
 #include "parameters.h"
 #include "goalList.h"
 #include "robotstate.h"
 #include "collisions.h"
 #include "goal.h"
+#include <Arduino.h>
 
 
-
-Encoder rightEnc = Encoder(A_RIGHT, B_RIGHT);
-Encoder leftEnc = Encoder(A_LEFT, B_LEFT);
+//Encoder rightEnc = Encoder(A_RIGHT, B_RIGHT);
+//Encoder leftEnc = Encoder(A_LEFT, B_LEFT);
 extern RobotState robotState;
 extern Collisions collisions;
 extern GoalList goalList;
 
 SimpleTimer timer = SimpleTimer();
 
-void fillGoals() {
-    // TODO add goal dynamically with ros or custom serial / CAN protocol
-    // or fetch all goals from xml / json / whatever
-    goalList.addGoal( new Goto(1000, 0));
-    //goalList.addGoal(new Rot(3.14/2));
-    //goalList.addGoal(new Goto(0, 1000));
-    //goalList.addGoal(new Rot(3.14/2));
-    //goalList.addGoal(new Goto(-1000, 0));
-    //goalList.addGoal(new Rot(3.14/2));
-    //goalList.addGoal(new Goto(0, -1000));
-    //Serial.println("fillGoals");
-}
 
-void asservLoop() {
-  
-    int leftTicks = leftEnc.read();
-    int rightTicks = - rightEnc.read(); // minus sign because motors are in opposite directions
-    robotState.update(leftTicks, rightTicks);  // update robostate after
-    collisions.update();
-    goalList.processCurrentGoal();
-    Serial.println("asservLoop");
-    
-}
-void setup() {
-    Serial.begin(9600);
-    timer.setInterval(TIMER_MS, asservLoop);
-    fillGoals();
-}
+void debug(){
+  Encoder rightEnc = Encoder(A_RIGHT, B_RIGHT);
+  Encoder leftEnc = Encoder(A_LEFT, B_LEFT);
 
-void loop() {
-         
-        /*static bool a = true;
-        if (a){
-          timer.setInterval(TIMER_MS, asservLoop);
-          fillGoals();
-          a = false;
-        }*/
-       
-        //Debug coders
-        digitalWrite(FORWARD_LEFT, HIGH);
-        digitalWrite(BACKWARDS_LEFT, LOW);
-        analogWrite(PWM_LEFT, 100);
+  while (!digitalRead(INTER)){
+        digitalWrite(FORWARD_LEFT, LOW);
+        digitalWrite(BACKWARDS_LEFT, HIGH);
+        analogWrite(PWM_LEFT, 83);
 
         digitalWrite(FORWARD_RIGHT, HIGH);
         digitalWrite(BACKWARDS_RIGHT, LOW);
         analogWrite(PWM_RIGHT, 100);
-        //int leftTicks = leftEnc.read();
-        //int rightTicks = - rightEnc.read();
+        int leftTicks = leftEnc.read();
+        int rightTicks = - rightEnc.read();
+        Serial.print("leftEnc.read() : ");
         Serial.println(leftEnc.read());
+        Serial.print("- rightEnc.read() : ");
         Serial.println(- rightEnc.read());
         delay(500);
-        return;
-        
-
+   }
   
+}
+void fillGoals() {
+    // TODO add goal dynamically with ros or custom serial / CAN protocol
+    // or fetch all goals from xml / json / whatever
+    goalList.addGoal( new Goto(1,500, 0.0, 300));
+    goalList.addGoal(new Rot(0,3.14/2));
+    goalList.addGoal( new Goto(1, 500.0, 500.0, 300));
+    goalList.addGoal(new Rot(0,3.14));
+    goalList.addGoal( new Goto(1, 0.0, 500.0, 300));
+    goalList.addGoal(new Rot(0,(3*3.14)/2));
+    goalList.addGoal( new Goto(1,0.0, 0.0, 200));
+    goalList.addGoal(new Rot(0,0.0));
+    //goalList.addGoal(new Goto(0, 1000, 1000));
+    //goalList.addGoal(new Rot(3.14/2));
+    //goalList.addGoal(new Goto(-1000, 0));
+    //goalList.addGoal(new Rot(3.14/2));
+    //goalList.addGoal(new Goto(0, -1000));
+
+}
+
+void asservLoop() {
+    robotState.update();
+    collisions.update();
+    goalList.processCurrentGoal();  
+}
+void setup() {
+    Serial.begin(115200);
+    timer.setInterval(TIMER_MS, asservLoop);
+    fillGoals();
+    pinMode(INTER, INPUT_PULLUP);
+    
+}
+
+void loop(){  
   timer.run();
-  Serial.println("loop");
-  //delay(10);
-  //fillGoals();
+
 }
 
 

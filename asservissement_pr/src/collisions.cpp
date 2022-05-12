@@ -10,16 +10,16 @@
 Collisions collisions;
 
 void Collisions::update() {
-    float distToObstacle = readSensors(TRIG, ECHO); // mm // TODO fetch it from sensors
-    
+    //float distToObstacle = readSensors(TRIG, ECHO); // mm // TODO fetch it from sensors
+    float distToObstacle = 5000;
     //obst.ahead = readSensors(FORWARD_TRIG, FORWARD_ECHO);
     //obst.behind = readSensors(BACKWARDS_TRIG, BACKWARDS_ECHO);
     
-    maxSpeed = COLLISIONS_SPEED_COEFF * (distToObstacle - COLLISIONS_STOP_DISTANCE);
+   // maxSpeed = COLLISIONS_SPEED_COEFF * (distToObstacle - COLLISIONS_STOP_DISTANCE);
     
-    if (maxSpeed < 0) {
-        maxSpeed = 0;
-    }
+   // if (maxSpeed < 0) {
+       // maxSpeed = 0;
+   // }
      //Serial.println("Collisions::update()");
 }
 
@@ -34,4 +34,7 @@ float Collisions::readSensors(short triggerpin, short echopin ){
 	return distance ;
 }
 
-
+const float Collisions::getMaxSpeed(){
+    maxSpeed = MAX_SPEED;
+     return maxSpeed;
+}
