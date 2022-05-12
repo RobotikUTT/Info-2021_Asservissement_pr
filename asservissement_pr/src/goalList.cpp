@@ -11,12 +11,12 @@ extern Control control;
 void GoalList::resetGoals() {
     currentGoalIndex = 0;
     lastGoalIndex = 0;
-    goalsPtr[currentGoalIndex] = new Goal();
+    goals[currentGoalIndex] = Goal();
     Serial.println("GoalList::resetGoals()");
 }
 
 /*void GoalList::processCurrentGoal() {
-    if (goals[currentGoalIndex].isReached() && currentGoalIndex != lastGoalIndex){ 
+    if (goals[currentGoalIndex].isReached() && currentGoalIndex != lastGoalIndex) {
         currentGoalIndex = (currentGoalIndex + 1) % MAX_SIMULTANEOUS_GOALS;
         control.resetPIDs();
     }
@@ -26,7 +26,7 @@ void GoalList::resetGoals() {
 }*/
 
 void GoalList::processCurrentGoal() {
-    if (goalsPtr[currentGoalIndex]->isReached()){
+    if (goalsPtr[currentGoalIndex]->isReached() && currentGoalIndex == lastGoalIndex){
         if (currentGoalIndex == lastGoalIndex) {
             Serial.println("isReached()");
             exit(0);

@@ -8,9 +8,9 @@
 
 // Coders
 #define A_RIGHT 3
-#define B_RIGHT 2//18 
+#define B_RIGHT 18 
 #define A_LEFT 19
-#define B_LEFT 18//2
+#define B_LEFT 2
 
 // Motors
 #define FORWARD_LEFT 9

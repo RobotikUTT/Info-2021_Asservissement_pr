@@ -27,6 +27,7 @@ public:
     void gProcess(Goal const& goal);
 
 private:
+    Goal goals[MAX_SIMULTANEOUS_GOALS];
     
     Goal* goalsPtr[MAX_SIMULTANEOUS_GOALS]= {0}; // save goals
     int16_t currentGoalIndex = 0;
